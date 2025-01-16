@@ -1,7 +1,7 @@
 // src/screens/RecipeDetailsScreen.tsx
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { ScrollView } from "react-native";
-import { useLocalSearchParams, router } from "expo-router";
+import { useLocalSearchParams, router, useFocusEffect } from "expo-router";
 import {
   Box,
   VStack,
@@ -16,7 +16,6 @@ import {
   Divider,
 } from "native-base";
 import { Ionicons } from "@expo/vector-icons";
-// Zakładając, że exportujesz recipeService i Recipe domyślnie z recipeService.ts
 import recipeService, { Recipe } from "../../../src/services/recipeService";
 
 export default function RecipeDetailsScreen() {
@@ -26,12 +25,10 @@ export default function RecipeDetailsScreen() {
   const [isFavorite, setIsFavorite] = useState(false);
   const toast = useToast();
 
-  useEffect(() => {
-    fetchRecipe();
-  }, [id]);
-
-  const fetchRecipe = async () => {
+  const fetchRecipe = useCallback(async () => {
     try {
+      setIsLoading(true);
+      await recipeService.reloadData();
       const data = await recipeService.getById(id as string);
       if (!data) {
         throw new Error("Recipe not found");
@@ -47,7 +44,13 @@ export default function RecipeDetailsScreen() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [id]);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchRecipe();
+    }, [fetchRecipe])
+  );
 
   const handleDelete = async () => {
     try {
@@ -64,6 +67,14 @@ export default function RecipeDetailsScreen() {
         variant: "error",
       });
     }
+  };
+
+  const handleEdit = () => {
+    router.push(`/(drawer)/recipes/edit/${recipe?.id}?forceReload=true` as any);
+  };
+
+  const handleRefresh = () => {
+    fetchRecipe();
   };
 
   const toggleFavorite = () => {
@@ -83,7 +94,6 @@ export default function RecipeDetailsScreen() {
     return null;
   }
 
-  // Doprecyzowanie typów
   const difficultyColor: { [key: string]: string } = {
     easy: "green.500",
     medium: "yellow.500",
@@ -98,7 +108,6 @@ export default function RecipeDetailsScreen() {
 
   return (
     <Box flex={1} bg="white" safeArea>
-      {/* Header Image */}
       <Box position="relative" height={300}>
         <Image
           source={{
@@ -126,7 +135,6 @@ export default function RecipeDetailsScreen() {
           }
         />
 
-        {/* Header Buttons */}
         <HStack
           position="absolute"
           top={4}
@@ -143,6 +151,13 @@ export default function RecipeDetailsScreen() {
           />
           <HStack space={2}>
             <IconButton
+              icon={<Icon as={Ionicons} name="refresh-outline" color="white" />}
+              onPress={handleRefresh}
+              variant="solid"
+              bg="rgba(0,0,0,0.5)"
+              _pressed={{ bg: "rgba(0,0,0,0.7)" }}
+            />
+            <IconButton
               icon={
                 <Icon
                   as={Ionicons}
@@ -157,9 +172,7 @@ export default function RecipeDetailsScreen() {
             />
             <IconButton
               icon={<Icon as={Ionicons} name="create-outline" color="white" />}
-              onPress={() =>
-                router.push(`/(drawer)/recipes/edit/${recipe.id}` as any)
-              }
+              onPress={handleEdit}
               variant="solid"
               bg="rgba(0,0,0,0.5)"
               _pressed={{ bg: "rgba(0,0,0,0.7)" }}
@@ -174,7 +187,6 @@ export default function RecipeDetailsScreen() {
           </HStack>
         </HStack>
 
-        {/* Recipe Info Overlay */}
         <Box
           position="absolute"
           bottom={0}
@@ -194,7 +206,6 @@ export default function RecipeDetailsScreen() {
 
       <ScrollView>
         <VStack p={4} space={6}>
-          {/* Quick Info */}
           <HStack justifyContent="space-around">
             <VStack alignItems="center">
               <Icon
@@ -241,7 +252,6 @@ export default function RecipeDetailsScreen() {
 
           <Divider my={4} />
 
-          {/* Ingredients */}
           <Heading size="md">Składniki</Heading>
           <VStack space={2} mt={2}>
             {recipe.ingredients.map((ingredient: string, index: number) => (
@@ -253,7 +263,6 @@ export default function RecipeDetailsScreen() {
 
           <Divider my={4} />
 
-          {/* Instructions */}
           <Heading size="md">Instrukcje</Heading>
           <Text mt={2}>{recipe.instructions}</Text>
         </VStack>
