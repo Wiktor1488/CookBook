@@ -1,19 +1,22 @@
 import { Drawer } from "expo-router/drawer";
 import { Ionicons } from "@expo/vector-icons";
-import { Settings, TouchableOpacity } from "react-native";
+import { TouchableOpacity } from "react-native";
 import { DrawerActions, useNavigation } from "@react-navigation/native";
 
-function DrawerButton() {
+// Wydzielony jako osobny komponent funkcyjny
+const DrawerButton = () => {
   const navigation = useNavigation();
+
+  const handlePress = () => {
+    navigation.dispatch(DrawerActions.toggleDrawer());
+  };
+
   return (
-    <TouchableOpacity
-      onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
-      style={{ marginRight: 15 }}
-    >
+    <TouchableOpacity onPress={handlePress} style={{ marginRight: 15 }}>
       <Ionicons name="menu-outline" size={24} color="black" />
     </TouchableOpacity>
   );
-}
+};
 
 export default function DrawerLayout() {
   return (
@@ -58,29 +61,29 @@ export default function DrawerLayout() {
       <Drawer.Screen
         name="recipes/settings"
         options={{
-          drawerItemStyle: { display: "none" }, // Ukrycie tego elementu w menu szuflady
-          headerShown: false, // Ukrycie nagłówka
+          drawerItemStyle: { display: "none" },
+          headerShown: false,
         }}
       />
       <Drawer.Screen
         name="settings/account"
         options={{
-          drawerItemStyle: { display: "none" }, // Ukrycie tego elementu w menu szuflady
-          headerShown: false, // Ukrycie nagłówka
+          drawerItemStyle: { display: "none" },
+          headerShown: false,
         }}
       />
       <Drawer.Screen
         name="recipes/[id]"
         options={{
-          drawerItemStyle: { display: "none" }, // Ukrycie tego elementu w menu szuflady
-          headerShown: false, // Ukrycie nagłówka
+          drawerItemStyle: { display: "none" },
+          headerShown: false,
         }}
       />
       <Drawer.Screen
         name="recipes/edit/[id]"
         options={{
-          drawerItemStyle: { display: "none" }, // Ukrycie tego elementu w menu szuflady
-          headerShown: false, // Ukrycie nagłówka
+          drawerItemStyle: { display: "none" },
+          headerShown: false,
         }}
       />
     </Drawer>

@@ -18,7 +18,7 @@ export interface User {
   email: string;
   avatar?: string;
 }
-
+export type Difficulty = "easy" | "medium" | "hard";
 export interface Recipe {
   id: string;
   title: string;
@@ -35,6 +35,7 @@ export interface Recipe {
 }
 
 export interface CreateRecipeData {
+  id: string;
   title: string;
   description: string;
   ingredients: string[];
@@ -43,8 +44,24 @@ export interface CreateRecipeData {
   cookingTime: number;
   servings: number;
   difficulty: "easy" | "medium" | "hard";
+  authorId: string;
+  createdAt: string;
+  updatedAt: string;
 }
-
+export interface Recipe {
+  id: string;
+  title: string;
+  description: string;
+  ingredients: string[];
+  instructions: string;
+  image?: string;
+  cookingTime: number;
+  servings: number;
+  difficulty: "easy" | "medium" | "hard";
+  authorId: string;
+  createdAt: string;
+  updatedAt: string;
+}
 export interface UpdateRecipeData extends Partial<CreateRecipeData> {
   id: string;
 }

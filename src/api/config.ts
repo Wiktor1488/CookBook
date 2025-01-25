@@ -1,3 +1,4 @@
+// src/api/config.ts
 import axios from "axios";
 import { Recipe, CreateRecipeData, UpdateRecipeData } from "../types/api";
 
@@ -6,9 +7,9 @@ console.log("API Base URL:", BASE_URL);
 
 export const api = axios.create({
   baseURL: BASE_URL,
-  timeout: 10000,
+  timeout: 100000,
   headers: {
-    "Content-Type": "application/json",
+    "Content-Type": "multipart/form-data",
   },
 });
 

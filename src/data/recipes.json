@@ -21,24 +21,19 @@
       "updatedAt": "2024-01-14T12:00:00.000Z"
     },
     {
-      "id": "2",
-      "title": "STEEESWWWT",
-      "description": "Klasyczne włoskie danie z makaronem i sosem mięsnym",
-      "ingredients": [
-        "500g makaronu spaghetti",
-        "400g mięsa mielonego",
-        "2 cebule",
-        "2 ząbki czosnku",
-        "2 puszki pomidorów"
-      ],
-      "instructions": "1. Ugotuj makaron al dente\n2. Podsmaż mięso z cebulą\n3. Dodaj pomidory i gotuj 20 minut\n4. Połącz z makaronem",
-      "image": "./assets/images/placeholder2.png",
-      "cookingTime": 45,
-      "servings": 4,
-      "difficulty": "easy",
-      "authorId": "1",
-      "createdAt": "2024-01-14T12:00:00.000Z",
-      "updatedAt": "2024-01-14T12:00:00.000Z"
+      "id": "sxn6csucm",
+      "createdAt": "2025-01-25T13:10:13.498Z",
+      "updatedAt": "2025-01-25T13:10:13.498Z"
+    },
+    {
+      "id": "jpdp8vyh3",
+      "createdAt": "2025-01-25T13:13:37.738Z",
+      "updatedAt": "2025-01-25T13:13:37.738Z"
+    },
+    {
+      "id": "29uobv4za",
+      "createdAt": "2025-01-25T13:18:58.563Z",
+      "updatedAt": "2025-01-25T13:18:58.563Z"
     }
   ]
 }

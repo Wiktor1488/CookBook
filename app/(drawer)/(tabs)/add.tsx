@@ -14,11 +14,14 @@ import {
   useToast,
   TextArea,
   ITextAreaProps,
+  Select,
 } from "native-base";
 import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import { Camera } from "expo-camera";
+import { recipeService } from "../../../src/services/recipeService";
+import { CreateRecipeData } from "../../../src/types/api";
 
 interface CustomTextAreaProps extends Partial<ITextAreaProps> {
   value: string;
@@ -28,17 +31,18 @@ interface CustomTextAreaProps extends Partial<ITextAreaProps> {
 }
 
 const CustomTextArea = React.forwardRef<any, CustomTextAreaProps>(
-  (props, ref) => {
-    const baseProps = {
-      w: "100%",
-      autoCompleteType: undefined,
-      onTextInput: () => {},
-      tvParallaxProperties: {},
-      ...props,
-    };
-
-    return <TextArea {...baseProps} ref={ref} />;
-  }
+  (props, ref) => (
+    <TextArea
+      {...{
+        w: "100%",
+        autoCompleteType: undefined,
+        tvParallaxProperties: {},
+        onTextInput: () => {},
+        ...props,
+      }}
+      ref={ref}
+    />
+  )
 );
 
 export default function AddRecipeScreen() {
@@ -47,28 +51,81 @@ export default function AddRecipeScreen() {
   const [ingredients, setIngredients] = useState("");
   const [instructions, setInstructions] = useState("");
   const [image, setImage] = useState<string | null>(null);
+  const [cookingTime, setCookingTime] = useState("30");
+  const [servings, setServings] = useState("4");
+  const [difficulty, setDifficulty] = useState<"easy" | "medium" | "hard">(
+    "medium"
+  );
   const [loading, setLoading] = useState(false);
 
   const toast = useToast();
 
-  const requestPermissions = async () => {
+  const handleSubmit = async () => {
+    if (!title || !description || !ingredients || !instructions) {
+      toast.show({
+        description: "Wypełnij wszystkie wymagane pola.",
+        placement: "top",
+      });
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const recipeData: CreateRecipeData = {
+        id: Math.random().toString(36).substr(2, 9),
+        title,
+        description,
+        ingredients: ingredients.split("\n").filter((item) => item.trim()),
+        instructions,
+        cookingTime: parseInt(cookingTime) || 30,
+        servings: parseInt(servings) || 4,
+        difficulty,
+        image: image || "./assets/images/placeholder.png",
+        authorId: "1",
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+
+      console.log("Wysyłane dane:", recipeData); // Dodaj logi
+      const newRecipe = await recipeService.create(recipeData);
+      console.log("Odpowiedź z serwera:", newRecipe); // Dodaj logi
+      if (image) {
+        console.log("Wysyłanie zdjęcia..."); // Dodaj logi
+        const imageUrl = await recipeService.uploadImage(newRecipe.id, image);
+        console.log("URL zdjęcia:", imageUrl); // Dodaj logi
+        await recipeService.update(newRecipe.id, {
+          ...recipeData,
+          image: imageUrl,
+        });
+      }
+
+      toast.show({
+        description: "Przepis dodany pomyślnie!",
+        placement: "top",
+      });
+      router.push("/(drawer)/(tabs)/home");
+    } catch (error) {
+      console.error("Błąd:", error);
+      toast.show({
+        description: "Wystąpił błąd podczas dodawania przepisu.",
+        placement: "top",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const takePhoto = async () => {
     if (Platform.OS !== "web") {
       const { status } = await Camera.requestCameraPermissionsAsync();
       if (status !== "granted") {
         toast.show({
-          description: "Potrzebujemy dostępu do aparatu aby zrobić zdjęcie.",
+          description: "Potrzebujemy dostępu do aparatu.",
           placement: "top",
         });
-        return false;
+        return;
       }
     }
-    return true;
-  };
-
-  const takePhoto = async () => {
-    const hasPermission = await requestPermissions();
-
-    if (!hasPermission) return;
 
     try {
       const result = await ImagePicker.launchCameraAsync({
@@ -82,9 +139,8 @@ export default function AddRecipeScreen() {
         setImage(result.assets[0].uri);
       }
     } catch (error) {
-      console.error("Błąd podczas robienia zdjęcia:", error);
       toast.show({
-        description: "Wystąpił błąd podczas robienia zdjęcia.",
+        description: "Błąd podczas robienia zdjęcia.",
         placement: "top",
       });
     }
@@ -103,40 +159,10 @@ export default function AddRecipeScreen() {
         setImage(result.assets[0].uri);
       }
     } catch (error) {
-      console.error("Błąd podczas wybierania zdjęcia:", error);
       toast.show({
-        description: "Wystąpił błąd podczas wybierania zdjęcia.",
+        description: "Błąd podczas wybierania zdjęcia.",
         placement: "top",
       });
-    }
-  };
-
-  const handleSubmit = async () => {
-    if (!title || !description || !ingredients || !instructions) {
-      toast.show({
-        description: "Wypełnij wszystkie wymagane pola.",
-        placement: "top",
-      });
-      return;
-    }
-
-    setLoading(true);
-    try {
-      // TODO: Implementacja wysyłania danych do API
-
-      toast.show({
-        description: "Przepis został dodany pomyślnie!",
-        placement: "top",
-      });
-      router.back();
-    } catch (error) {
-      console.error("Błąd podczas dodawania przepisu:", error);
-      toast.show({
-        description: "Wystąpił błąd podczas dodawania przepisu.",
-        placement: "top",
-      });
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -206,7 +232,8 @@ export default function AddRecipeScreen() {
             <CustomTextArea
               value={ingredients}
               onChangeText={setIngredients}
-              placeholder="Lista składników..."
+              placeholder="Lista składników (każdy w nowej linii)..."
+              numberOfLines={4}
             />
           </FormControl>
 
@@ -218,6 +245,41 @@ export default function AddRecipeScreen() {
               placeholder="Sposób przygotowania..."
               numberOfLines={6}
             />
+          </FormControl>
+
+          <FormControl>
+            <FormControl.Label>Czas przygotowania (minuty)</FormControl.Label>
+            <Input
+              value={cookingTime}
+              onChangeText={setCookingTime}
+              keyboardType="numeric"
+              placeholder="Np. 30"
+            />
+          </FormControl>
+
+          <FormControl>
+            <FormControl.Label>Liczba porcji</FormControl.Label>
+            <Input
+              value={servings}
+              onChangeText={setServings}
+              keyboardType="numeric"
+              placeholder="Np. 4"
+            />
+          </FormControl>
+
+          <FormControl>
+            <FormControl.Label>Poziom trudności</FormControl.Label>
+            <Select
+              selectedValue={difficulty}
+              onValueChange={(itemValue: string) =>
+                setDifficulty(itemValue as "easy" | "medium" | "hard")
+              }
+              placeholder="Wybierz poziom trudności"
+            >
+              <Select.Item label="Łatwy" value="easy" />
+              <Select.Item label="Średni" value="medium" />
+              <Select.Item label="Trudny" value="hard" />
+            </Select>
           </FormControl>
 
           <Button onPress={handleSubmit} isLoading={loading} mt={4}>

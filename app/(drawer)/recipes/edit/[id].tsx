@@ -20,11 +20,12 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import { CustomTextArea } from "../../../../components/CustomTextArea";
-import recipeService, {
+import {
   Recipe,
   Difficulty,
-} from "../../../../src/services/recipeService";
-
+  CreateRecipeData,
+} from "../../../../src/types/api";
+import recipeService from "../../../../src/services/recipeService";
 interface FormData {
   title: string;
   description: string;
@@ -227,16 +228,20 @@ export default function RecipeFormScreen() {
     setIsSaving(true);
     try {
       // Konwersja FormData do parametrów Recipe
-      const recipeData = {
-        title: formData.title,
-        description: formData.description,
-        ingredients: formData.ingredients,
-        instructions: formData.instructions,
-        image: formData.image || "", // Domyślnie pusty string, jeśli null
-        cookingTime: formData.cookingTime,
-        servings: formData.servings,
-        difficulty: formData.difficulty,
-      };
+ const recipeData: CreateRecipeData = {
+   title: formData.title,
+   description: formData.description,
+   ingredients: formData.ingredients,
+   instructions: formData.instructions,
+   image: formData.image || "",
+   cookingTime: formData.cookingTime,
+   servings: formData.servings,
+   difficulty: formData.difficulty,
+   id: Math.random().toString(36).substr(2, 9),
+   authorId: "user123", // tymczasowe
+   createdAt: new Date().toISOString(),
+   updatedAt: new Date().toISOString(),
+ };
 
       if (isEditing) {
         await recipeService.update(id as string, recipeData);

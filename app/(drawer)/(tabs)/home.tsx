@@ -19,7 +19,8 @@ import {
 } from "native-base";
 import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import { recipeService, Recipe } from "../../../src/services/recipeService";
+import { recipeService } from "../../../src/services/recipeService";
+import { Recipe } from "../../../src/types/api";
 import _ from "lodash";
 
 interface RecipeCardProps {
@@ -139,8 +140,6 @@ export default function RecipesScreen() {
     setIsRefreshing(true);
     fetchRecipes(searchQuery);
   };
-
-
 
   if (isLoading) {
     return (

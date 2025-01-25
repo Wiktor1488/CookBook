@@ -16,7 +16,8 @@ import {
   Divider,
 } from "native-base";
 import { Ionicons } from "@expo/vector-icons";
-import recipeService, { Recipe } from "../../../src/services/recipeService";
+import { Recipe } from "../../../src/types/api";
+import recipeService from "../../../src/services/recipeService";
 
 export default function RecipeDetailsScreen() {
   const { id } = useLocalSearchParams();
@@ -28,7 +29,6 @@ export default function RecipeDetailsScreen() {
   const fetchRecipe = useCallback(async () => {
     try {
       setIsLoading(true);
-      await recipeService.reloadData();
       const data = await recipeService.getById(id as string);
       if (!data) {
         throw new Error("Recipe not found");
