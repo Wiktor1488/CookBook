@@ -16,8 +16,8 @@ import {
   Divider,
 } from "native-base";
 import { Ionicons } from "@expo/vector-icons";
-import { Recipe } from "../../../src/types/api";
-import recipeService from "../../../src/services/recipeService";
+import { Recipe } from "../../../../src/types/api";
+import recipeService from "../../../../src/services/recipeService";
 
 export default function RecipeDetailsScreen() {
   const { id } = useLocalSearchParams();
@@ -111,7 +111,9 @@ export default function RecipeDetailsScreen() {
       <Box position="relative" height={300}>
         <Image
           source={{
-            uri: recipe.image || "https://via.placeholder.com/800x600",
+            uri: recipe.image
+              ? `http://10.0.2.2:3000/uploads/${recipe.image.split("/").pop()}`
+              : require("../../../../src/uploads/placeholder.png"),
           }}
           alt={recipe.title}
           height="100%"
@@ -166,20 +168,6 @@ export default function RecipeDetailsScreen() {
                 />
               }
               onPress={toggleFavorite}
-              variant="solid"
-              bg="rgba(0,0,0,0.5)"
-              _pressed={{ bg: "rgba(0,0,0,0.7)" }}
-            />
-            <IconButton
-              icon={<Icon as={Ionicons} name="create-outline" color="white" />}
-              onPress={handleEdit}
-              variant="solid"
-              bg="rgba(0,0,0,0.5)"
-              _pressed={{ bg: "rgba(0,0,0,0.7)" }}
-            />
-            <IconButton
-              icon={<Icon as={Ionicons} name="trash-outline" color="white" />}
-              onPress={handleDelete}
               variant="solid"
               bg="rgba(0,0,0,0.5)"
               _pressed={{ bg: "rgba(0,0,0,0.7)" }}
@@ -254,7 +242,7 @@ export default function RecipeDetailsScreen() {
 
           <Heading size="md">Składniki</Heading>
           <VStack space={2} mt={2}>
-            {recipe.ingredients.map((ingredient: string, index: number) => (
+            {recipe.ingredients?.map((ingredient: string, index: number) => (
               <Text key={index} fontSize="md">
                 - {ingredient}
               </Text>

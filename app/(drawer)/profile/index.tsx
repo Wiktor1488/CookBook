@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   VStack,
@@ -17,6 +17,8 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
+import { recipeService } from "../../../src/services/recipeService";
+import { Recipe } from "../../../src/types/api";
 
 interface UserStats {
   recipes: number;
@@ -34,14 +36,6 @@ interface UserData {
   stats: UserStats;
 }
 
-interface Recipe {
-  id: string;
-  title: string;
-  image: string;
-  likes: number;
-  comments: number;
-}
-
 interface StatBoxProps {
   label: string;
   value: number;
@@ -51,13 +45,12 @@ interface RecipeCardProps {
   recipe: Recipe;
 }
 
-// Przykładowe dane użytkownika
 const mockUserData: UserData = {
   id: "1",
   name: "Jan Kowalski",
-  email: "jan.kowalski@example.com",
+  email: "jan.kowalski@mail.com",
   bio: "Pasjonat gotowania i dzielenia się przepisami",
-  avatar: "https://via.placeholder.com/150",
+  avatar: "http://10.0.2.2:3000/uploads/avatar.jpg",
   stats: {
     recipes: 15,
     followers: 124,
@@ -65,24 +58,6 @@ const mockUserData: UserData = {
     favorites: 45,
   },
 };
-
-// Przykładowe przepisy użytkownika
-const mockUserRecipes: Recipe[] = [
-  {
-    id: "1",
-    title: "Spaghetti Bolognese",
-    image: "https://via.placeholder.com/150",
-    likes: 23,
-    comments: 5,
-  },
-  {
-    id: "2",
-    title: "Kurczak curry",
-    image: "https://via.placeholder.com/150",
-    likes: 15,
-    comments: 3,
-  },
-];
 
 const StatBox: React.FC<StatBoxProps> = ({ label, value }) => (
   <VStack alignItems="center" flex={1}>
@@ -97,7 +72,7 @@ const StatBox: React.FC<StatBoxProps> = ({ label, value }) => (
 
 const RecipeCard: React.FC<RecipeCardProps> = ({ recipe }) => (
   <Pressable
-    onPress={() => router.push(`/(tabs)/recipes/edit/${recipe.id}` as any)}
+    onPress={() => router.push(`/(tabs)/recipes/${recipe.id}` as any)}
     mb={4}
   >
     <Box
@@ -107,7 +82,14 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe }) => (
       overflow="hidden"
     >
       <Box height={150}>
-        <Avatar source={{ uri: recipe.image }} size="full" />
+        <Avatar
+          source={{
+            uri: recipe.image
+              ? `http://10.0.2.2:3000/uploads/${recipe.image.split("/").pop()}`
+              : require("../../../src/uploads/placeholder.png"),
+          }}
+          size="full"
+        />
       </Box>
       <VStack p={3} space={2}>
         <Text fontSize="md" fontWeight="bold">
@@ -116,24 +98,24 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe }) => (
         <HStack justifyContent="space-between" alignItems="center">
           <HStack space={3}>
             <HStack space={1} alignItems="center">
-              <Icon as={Ionicons} name="heart" size="sm" color="red.500" />
-              <Text>{recipe.likes}</Text>
+              <Icon
+                as={Ionicons}
+                name="time-outline"
+                size="sm"
+                color="gray.500"
+              />
+              <Text>{recipe.cookingTime} min</Text>
             </HStack>
             <HStack space={1} alignItems="center">
               <Icon
                 as={Ionicons}
-                name="chatbubble"
+                name="people-outline"
                 size="sm"
                 color="gray.500"
               />
-              <Text>{recipe.comments}</Text>
+              <Text>{recipe.servings}</Text>
             </HStack>
           </HStack>
-          <IconButton
-            icon={<Icon as={Ionicons} name="ellipsis-vertical" />}
-            variant="ghost"
-            size="sm"
-          />
         </HStack>
       </VStack>
     </Box>
@@ -143,9 +125,24 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe }) => (
 export default function ProfileScreen() {
   const [isEditing, setIsEditing] = useState(false);
   const [userData, setUserData] = useState<UserData>(mockUserData);
-  const [userRecipes, setUserRecipes] = useState<Recipe[]>(mockUserRecipes);
-
+  const [userRecipes, setUserRecipes] = useState<Recipe[]>([]);
   const toast = useToast();
+
+  useEffect(() => {
+    const fetchUserRecipes = async () => {
+      try {
+        const recipes = await recipeService.getUserRecipes("1");
+        setUserRecipes(recipes);
+      } catch (error) {
+        toast.show({
+          description: "Nie udało się pobrać przepisów",
+          placement: "top",
+          variant: "error",
+        });
+      }
+    };
+    fetchUserRecipes();
+  }, []);
 
   const handleEditAvatar = async () => {
     try {
@@ -172,14 +169,12 @@ export default function ProfileScreen() {
 
   const handleEditProfile = () => {
     setIsEditing(true);
-    // TODO: Przekierowanie do ekranu edycji profilu
   };
 
   return (
     <Box flex={1} bg="white" safeArea>
       <ScrollView>
         <VStack space={6} p={4}>
-          {/* Header section */}
           <HStack justifyContent="flex-end">
             <IconButton
               icon={<Icon as={Ionicons} name="settings-outline" />}
@@ -187,7 +182,6 @@ export default function ProfileScreen() {
             />
           </HStack>
 
-          {/* Profile info section */}
           <VStack space={4} alignItems="center">
             <Pressable onPress={handleEditAvatar}>
               <Avatar size="2xl" source={{ uri: userData.avatar }}>
@@ -212,7 +206,6 @@ export default function ProfileScreen() {
             </Button>
           </VStack>
 
-          {/* Stats section */}
           <HStack justifyContent="space-around" p={4}>
             <StatBox label="Przepisy" value={userData.stats.recipes} />
             <StatBox label="Obserwujący" value={userData.stats.followers} />
@@ -222,7 +215,6 @@ export default function ProfileScreen() {
 
           <Divider />
 
-          {/* Recipes section */}
           <VStack space={4}>
             <HStack justifyContent="space-between" alignItems="center">
               <Text fontSize="lg" fontWeight="bold">
@@ -231,9 +223,6 @@ export default function ProfileScreen() {
               <Button
                 variant="ghost"
                 endIcon={<Icon as={Ionicons} name="arrow-forward" />}
-                onPress={() => {
-                  // TODO: Przekierowanie do pełnej listy przepisów
-                }}
               >
                 Zobacz wszystkie
               </Button>

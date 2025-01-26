@@ -12,20 +12,26 @@ interface RecipesData {
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(cors());
+app.use(
+  cors({
+    origin: "*", // lub konkretne domeny np. 'http://localhost:8081'
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 app.use(express.json());
 
 const uploadsDir = path.join(
   "D:",
-  "MobilneProjektNEW",
-  "cookbook-mobile-app",
+  "PojebieMNie",
+  "cookbook-mobile-app2",
   "src",
   "uploads"
 );
 const dataDir = path.join(
   "D:",
-  "MobilneProjektNEW",
-  "cookbook-mobile-app",
+  "PojebieMNie",
+  "cookbook-mobile-app2",
   "src",
   "data"
 );
@@ -109,6 +115,8 @@ app.get("/recipes/:id", (req: Request, res: Response) => {
 
 app.post("/recipes", (req: Request<{}, {}, Recipe>, res: Response) => {
   try {
+    console.log("HEADERS:", JSON.stringify(req.headers, null, 2));
+    console.log("BODY:", JSON.stringify(req.body, null, 2));
     console.log("Received recipe data:", req.body);
     const recipesPath = path.join(dataDir, "recipes.json");
     let recipesData: RecipesData = { recipes: [] };
@@ -168,11 +176,31 @@ app.put("/recipes/:id", (req: Request, res: Response) => {
     res.status(500).json({ error: "Server error" });
   }
 });
-
+app.get("/users/:userId/recipes", (req: Request, res: Response) => {
+  try {
+    const recipesPath = path.join(dataDir, "recipes.json");
+    if (!fs.existsSync(recipesPath)) {
+      return res.json([]);
+    }
+    const recipesData = JSON.parse(fs.readFileSync(recipesPath, "utf8"));
+    const userRecipes = recipesData.recipes.filter(
+      (recipe: Recipe) => recipe.authorId === req.params.userId
+    );
+    res.json(userRecipes);
+  } catch (error) {
+    console.error("Error getting user recipes:", error);
+    res.status(500).json({ error: "Server error" });
+  }
+});
 app.post(
   "/recipes/:id/image",
   upload.single("image"),
   async (req: Request, res: Response) => {
+    console.log("UPLOAD REQUEST:", {
+      file: req.file,
+      body: req.body,
+      params: req.params,
+    });
     try {
       if (!req.file) {
         return res.status(400).json({ error: "No file uploaded" });
@@ -194,9 +222,11 @@ app.post(
       fs.writeFileSync(recipesPath, JSON.stringify(recipesData, null, 2));
       console.log("Image uploaded successfully:", imageUrl);
       res.json({ imageUrl });
-    } catch (error) {
-      console.error("Error uploading image:", error);
-      res.status(500).json({ error: "Server error" });
+    } catch (error: unknown) {
+      console.error("Pełen błąd uploadu:", error);
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      res.status(500).json({ error: "Server error", details: errorMessage });
     }
   }
 );

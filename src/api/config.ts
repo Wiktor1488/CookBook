@@ -7,12 +7,24 @@ console.log("API Base URL:", BASE_URL);
 
 export const api = axios.create({
   baseURL: BASE_URL,
-  timeout: 100000,
+  timeout: 10000,
   headers: {
-    "Content-Type": "multipart/form-data",
+    "Content-Type": "application/json", //multipart/form-data
   },
 });
-
+api.interceptors.request.use(
+  (config) => {
+    console.log("Request URL:", config.url);
+    console.log("Request Method:", config.method);
+    console.log("Request Headers:", config.headers);
+    console.log("Request Data:", config.data);
+    return config;
+  },
+  (error) => {
+    console.error("Request Error:", error);
+    return Promise.reject(error);
+  }
+);
 export const recipes = {
   getAll: async (params?: { search?: string; filter?: string }) => {
     console.log("API call: getAll with params:", params);

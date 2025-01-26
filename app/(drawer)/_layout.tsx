@@ -73,13 +73,6 @@ export default function DrawerLayout() {
         }}
       />
       <Drawer.Screen
-        name="recipes/[id]"
-        options={{
-          drawerItemStyle: { display: "none" },
-          headerShown: false,
-        }}
-      />
-      <Drawer.Screen
         name="recipes/edit/[id]"
         options={{
           drawerItemStyle: { display: "none" },

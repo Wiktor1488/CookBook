@@ -1,14 +1,11 @@
-import axios from "axios";
+import { api } from "../api/config";
 import { Recipe, CreateRecipeData } from "../types/api";
-import { recipes } from "../api/config";
 
 class RecipeService {
-  private baseUrl = "http://10.0.2.2:3000";
-
   async getById(id: string): Promise<Recipe | undefined> {
     try {
-      const response = await recipes.getById(id);
-      return response;
+      const response = await api.get(`/recipes/${id}`);
+      return response.data;
     } catch (error) {
       console.error("Error getting recipe:", error);
       throw error;
@@ -17,14 +14,13 @@ class RecipeService {
 
   async getAll(params?: { search?: string }): Promise<Recipe[]> {
     try {
-      const response = await recipes.getAll(params);
-      return response;
+      const response = await api.get("/recipes", { params });
+      return response.data; // zwróć response.data zamiast całego wywołania api.get
     } catch (error) {
-      console.error("Error getting recipes:", error);
+      console.error("Błąd pobierania przepisów:", error);
       throw error;
     }
   }
-
   async uploadImage(id: string, imageUri: string) {
     try {
       const formData = new FormData();
@@ -34,17 +30,11 @@ class RecipeService {
         name: "recipe.jpg",
       } as any);
 
-      const response = await axios.post(
-        `${this.baseUrl}/recipes/${id}/image`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Accept: "application/json",
-          },
-          transformRequest: (data) => data,
-        }
-      );
+      const response = await api.post(`/recipes/${id}/image`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
       return response.data.imageUrl;
     } catch (error) {
@@ -52,17 +42,32 @@ class RecipeService {
       throw error;
     }
   }
-
+  async getUserRecipes(userId: string): Promise<Recipe[]> {
+    try {
+      const response = await api.get(`/users/${userId}/recipes`);
+      return response.data;
+    } catch (error) {
+      console.error("Error getting user recipes:", error);
+      throw error;
+    }
+  }
   async create(data: CreateRecipeData): Promise<Recipe> {
     try {
-      const response = await recipes.create(data);
+      const response = await api.post("/recipes", data, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
       if (data.image && data.image.startsWith("file://")) {
-        const imageUrl = await this.uploadImage(response.id, data.image);
-        return this.update(response.id, { ...response, image: imageUrl });
+        const imageUrl = await this.uploadImage(response.data.id, data.image);
+        return this.update(response.data.id, {
+          ...response.data,
+          image: imageUrl,
+        });
       }
 
-      return response;
+      return response.data;
     } catch (error) {
       console.error("Error creating recipe:", error);
       throw error;
@@ -76,8 +81,8 @@ class RecipeService {
         data.image = imageUrl;
       }
 
-      const response = await recipes.update({ id, ...data });
-      return response;
+      const response = await api.put(`/recipes/${id}`, data);
+      return response.data;
     } catch (error) {
       console.error("Error updating recipe:", error);
       throw error;
@@ -86,7 +91,7 @@ class RecipeService {
 
   async delete(id: string): Promise<void> {
     try {
-      await recipes.delete(id);
+      await api.delete(`/recipes/${id}`);
     } catch (error) {
       console.error("Error deleting recipe:", error);
       throw error;

@@ -29,6 +29,11 @@ interface RecipeCardProps {
 }
 
 const RecipeCard: React.FC<RecipeCardProps> = ({ recipe, onPress }) => {
+  // Przekształć ścieżkę obrazu
+  const imageSource = recipe.image
+    ? `http://10.0.2.2:3000/uploads/${recipe.image.split("/").pop()}`
+    : require("../../../src/uploads/placeholder.png");
+
   return (
     <Pressable onPress={onPress} my={2}>
       <Box
@@ -38,11 +43,7 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe, onPress }) => {
         overflow="hidden"
       >
         <Image
-          source={
-            recipe.image
-              ? { uri: recipe.image }
-              : require("../../../assets/placeholder.png")
-          }
+          source={{ uri: imageSource }}
           alt={recipe.title}
           height={200}
           width="100%"
@@ -102,7 +103,7 @@ export default function RecipesScreen() {
     try {
       const data = await recipeService.getAll({ search });
       console.log("Fetched recipes:", data);
-      setRecipesList(data);
+      setRecipesList(data); // Ustawienie danych
       setError(null);
     } catch (err) {
       console.error("Error fetching recipes:", err);
@@ -196,12 +197,17 @@ export default function RecipesScreen() {
           <FlatList
             data={recipesList}
             keyExtractor={(item) => item.id}
-            renderItem={({ item }) => (
-              <RecipeCard
-                recipe={item}
-                onPress={() => router.push(`/(tabs)/recipes/${item.id}` as any)}
-              />
-            )}
+            renderItem={({ item }) => {
+              console.log("Rendering recipe:", item);
+              return (
+                <RecipeCard
+                  recipe={item}
+                  onPress={() =>
+                    router.push(`/(drawer)/(tabs)/recipes/${item.id}` as any)
+                  }
+                />
+              );
+            }}
             refreshControl={
               <RefreshControl
                 refreshing={isRefreshing}

@@ -191,10 +191,6 @@ export default function SettingsScreen() {
   return (
     <Box flex={1} bg="white" safeArea>
       <VStack p={4} space={2}>
-        <Text fontSize="xl" fontWeight="bold" mb={4}>
-          Ustawienia
-        </Text>
-
         <VStack space={2} divider={<Divider />}>
           {settingsOptions.map((option) => (
             <SettingsItem key={option.id} {...option} />

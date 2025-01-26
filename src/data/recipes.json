@@ -2,7 +2,7 @@
   "recipes": [
     {
       "id": "1",
-      "title": "Spaghetteeei Bolognese",
+      "title": "Spaghetteeei",
       "description": "Klasyczne włoskie danie z makaronem i sosem mięsnym",
       "ingredients": [
         "500g makaronu spaghetti",
@@ -21,19 +21,36 @@
       "updatedAt": "2024-01-14T12:00:00.000Z"
     },
     {
-      "id": "sxn6csucm",
-      "createdAt": "2025-01-25T13:10:13.498Z",
-      "updatedAt": "2025-01-25T13:10:13.498Z"
+      "title": "aa",
+      "description": "aa",
+      "ingredients": [
+        "aa"
+      ],
+      "instructions": "aa",
+      "cookingTime": 30,
+      "servings": 4,
+      "difficulty": "medium",
+      "image": "/uploads/recipe-1737880628336-556337985.jpg",
+      "authorId": "1",
+      "id": "4sfni03ix",
+      "createdAt": "2025-01-26T08:37:07.664Z",
+      "updatedAt": "2025-01-26T08:37:08.373Z"
     },
     {
-      "id": "jpdp8vyh3",
-      "createdAt": "2025-01-25T13:13:37.738Z",
-      "updatedAt": "2025-01-25T13:13:37.738Z"
-    },
-    {
-      "id": "29uobv4za",
-      "createdAt": "2025-01-25T13:18:58.563Z",
-      "updatedAt": "2025-01-25T13:18:58.563Z"
+      "title": "bbb",
+      "description": "b",
+      "ingredients": [
+        "bb"
+      ],
+      "instructions": "bb",
+      "cookingTime": 30,
+      "servings": 4,
+      "difficulty": "medium",
+      "image": "/uploads/recipe-1737880695627-342490408.jpg",
+      "authorId": "1",
+      "id": "23iraqjgq",
+      "createdAt": "2025-01-26T08:38:15.192Z",
+      "updatedAt": "2025-01-26T08:38:15.695Z"
     }
   ]
 }

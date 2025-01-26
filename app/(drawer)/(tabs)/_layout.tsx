@@ -38,6 +38,16 @@ export default function TabLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="recipes/[id]"
+        options={{
+          href: null,
+          title: "Szczegóły",
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="book" size={24} color={color} />
+          ),
+        }}
+      />
     </Tabs>
   );
 }
