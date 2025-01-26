@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Platform } from "react-native";
 import {
   Box,
@@ -19,8 +19,8 @@ import {
 import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
-import { Camera } from "expo-camera";
 import * as Notifications from "expo-notifications";
+import { Camera } from "expo-camera";
 import { recipeService } from "../../../src/services/recipeService";
 import { CreateRecipeData } from "../../../src/types/api";
 
@@ -61,17 +61,6 @@ export default function AddRecipeScreen() {
 
   const toast = useToast();
 
-  useEffect(() => {
-    async function requestPermissions() {
-      const { status } = await Notifications.requestPermissionsAsync();
-      console.log("Status uprawnień powiadomień:", status); // Dodaj ten log
-      if (status !== "granted") {
-        alert("Potrzebujemy uprawnień do wysyłania powiadomień!");
-      }
-    }
-    requestPermissions();
-  }, []);
-
   const handleSubmit = async () => {
     if (!title || !description || !ingredients || !instructions) {
       toast.show({
@@ -98,28 +87,23 @@ export default function AddRecipeScreen() {
         updatedAt: new Date().toISOString(),
       };
 
-      console.log("Wysyłane dane:", recipeData); // Dodaj logi
       const newRecipe = await recipeService.create(recipeData);
-      console.log("Próba wysłania powiadomienia");
-      await Notifications.scheduleNotificationAsync({
-        content: {
-          title: "Nowy przepis dodany!",
-          body: `Przepis "${title}" został pomyślnie dodany.`,
-        },
-        trigger: null,
-      });
-      console.log("Powiadomienie wysłane pomyślnie"); // Dodaj ten log
 
-      console.log("Odpowiedź z serwera:", newRecipe); // Dodaj logi
       if (image) {
-        console.log("Wysyłanie zdjęcia..."); // Dodaj logi
         const imageUrl = await recipeService.uploadImage(newRecipe.id, image);
-        console.log("URL zdjęcia:", imageUrl); // Dodaj logi
         await recipeService.update(newRecipe.id, {
           ...recipeData,
           image: imageUrl,
         });
       }
+
+      await Notifications.scheduleNotificationAsync({
+        content: {
+          title: "Nowy przepis",
+          body: `Pomyślnie dodano przepis: ${title}`,
+        },
+        trigger: null,
+      });
 
       toast.show({
         description: "Przepis dodany pomyślnie!",
@@ -147,7 +131,6 @@ export default function AddRecipeScreen() {
         });
         return;
       }
-      
     }
 
     try {

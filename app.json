@@ -33,14 +33,7 @@
           "backgroundColor": "#ffffff"
         }
       ],
-      "expo-secure-store",
-      [
-        "expo-notifications",
-        {
-          "icon": "./assets/icon.png",
-          "color": "#ffffff"
-        }
-      ]
+      "expo-secure-store"
     ],
     "experiments": {
       "typedRoutes": true

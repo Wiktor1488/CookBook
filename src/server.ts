@@ -16,9 +16,16 @@ app.use(
   cors({
     origin: "*", // lub konkretne domeny np. 'http://localhost:8081'
     methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    allowedHeaders: ["Content-Type", "Authorization", "Accept"],
+    credentials: true,
   })
 );
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  next();
+});
 app.use(express.json());
 
 const uploadsDir = path.join(
@@ -233,9 +240,6 @@ app.post(
 
 app.use("/uploads", express.static(uploadsDir));
 
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-  console.log("Folders configuration:");
-  console.log(`- Uploads: ${uploadsDir}`);
-  console.log(`- Data: ${dataDir}`);
+app.listen(Number(PORT), "0.0.0.0", () => {
+  console.log(`Server running on http://0.0.0.0:${PORT}`);
 });

@@ -22,6 +22,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { recipeService } from "../../../src/services/recipeService";
 import { Recipe } from "../../../src/types/api";
 import _ from "lodash";
+import { Platform } from "react-native";
 
 interface RecipeCardProps {
   recipe: Recipe;
@@ -30,9 +31,15 @@ interface RecipeCardProps {
 
 const RecipeCard: React.FC<RecipeCardProps> = ({ recipe, onPress }) => {
   // Przekształć ścieżkę obrazu
+  // Dla urządzenia
   const imageSource = recipe.image
-    ? `http://10.0.2.2:3000/uploads/${recipe.image.split("/").pop()}`
+    ? `http://192.168.1.12:3000${recipe.image}`
     : require("../../../src/uploads/placeholder.png");
+
+  // Dla emulatora
+  // const imageSource = recipe.image
+  //  ? `http://10.0.2.2:3000${recipe.image}`
+  //   : require("../../../src/uploads/placeholder.png");
 
   return (
     <Pressable onPress={onPress} my={2}>

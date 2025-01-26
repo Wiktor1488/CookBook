@@ -1,6 +1,5 @@
 import { api } from "../api/config";
 import { Recipe, CreateRecipeData } from "../types/api";
-import * as Notifications from "expo-notifications";
 
 class RecipeService {
   async getById(id: string): Promise<Recipe | undefined> {
@@ -58,13 +57,6 @@ class RecipeService {
         headers: {
           "Content-Type": "application/json",
         },
-      });
-      await Notifications.scheduleNotificationAsync({
-        content: {
-          title: "Nowy przepis dodany!",
-          body: `Przepis "${data.title}" został pomyślnie dodany.`,
-        },
-        trigger: null,
       });
 
       if (data.image && data.image.startsWith("file://")) {

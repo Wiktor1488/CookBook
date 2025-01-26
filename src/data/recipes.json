@@ -195,6 +195,86 @@
       "id": "r83fxxp2n",
       "createdAt": "2025-01-26T09:39:40.830Z",
       "updatedAt": "2025-01-26T09:39:42.037Z"
+    },
+    {
+      "title": "eewa",
+      "description": "ewa",
+      "ingredients": [
+        "ewa"
+      ],
+      "instructions": "ewa",
+      "cookingTime": 30,
+      "servings": 4,
+      "difficulty": "medium",
+      "image": "/uploads/recipe-1737899610161-359930787.jpg",
+      "authorId": "1",
+      "id": "ecvhk1omq",
+      "createdAt": "2025-01-26T13:53:30.092Z",
+      "updatedAt": "2025-01-26T13:53:30.228Z"
+    },
+    {
+      "title": "eewa",
+      "description": "ewa",
+      "ingredients": [
+        "ewa"
+      ],
+      "instructions": "ewa",
+      "cookingTime": 30,
+      "servings": 4,
+      "difficulty": "medium",
+      "image": "/uploads/recipe-1737899638818-412865615.jpg",
+      "authorId": "1",
+      "id": "std9np3cm",
+      "createdAt": "2025-01-26T13:53:58.364Z",
+      "updatedAt": "2025-01-26T13:53:58.867Z"
+    },
+    {
+      "title": "chelsta",
+      "description": "to",
+      "ingredients": [
+        "faja"
+      ],
+      "instructions": "xd",
+      "cookingTime": 30,
+      "servings": 4,
+      "difficulty": "medium",
+      "image": "/uploads/recipe-1737902920519-506892640.jpg",
+      "authorId": "1",
+      "id": "6q50flc5m",
+      "createdAt": "2025-01-26T14:48:39.903Z",
+      "updatedAt": "2025-01-26T14:48:40.553Z"
+    },
+    {
+      "title": "Ttt",
+      "description": "Ttt",
+      "ingredients": [
+        "Ttt"
+      ],
+      "instructions": "Ttt",
+      "cookingTime": 30,
+      "servings": 4,
+      "difficulty": "medium",
+      "image": "/uploads/recipe-1737903325831-878452860.jpg",
+      "authorId": "1",
+      "id": "41dbkssj4",
+      "createdAt": "2025-01-26T14:55:25.799Z",
+      "updatedAt": "2025-01-26T14:55:28.990Z"
+    },
+    {
+      "title": "Witam",
+      "description": "Witam",
+      "ingredients": [
+        "Witam"
+      ],
+      "instructions": "Witam",
+      "cookingTime": 30,
+      "servings": 4,
+      "difficulty": "medium",
+      "image": "/uploads/recipe-1737903647384-716053302.jpg",
+      "authorId": "1",
+      "id": "k683f5tsm",
+      "createdAt": "2025-01-26T15:00:43.541Z",
+      "updatedAt": "2025-01-26T15:00:50.479Z"
     }
   ]
 }
