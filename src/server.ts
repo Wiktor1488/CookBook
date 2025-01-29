@@ -35,14 +35,14 @@ app.use(express.json());
 // Konfiguracja ścieżek
 const uploadsDir = path.join(
   "D:",
-  "PojebieMNie",
+  "Projekt",
   "cookbook-mobile-app2",
   "src",
   "uploads"
 );
 const dataDir = path.join(
   "D:",
-  "PojebieMNie",
+  "Projekt",
   "cookbook-mobile-app2",
   "src",
   "data"
