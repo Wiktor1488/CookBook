@@ -9,6 +9,7 @@ import {
   Heading,
   Text,
   Link,
+  Image,
 } from "native-base";
 import { router } from "expo-router";
 import { authService } from "../../src/services/authService";
@@ -46,6 +47,13 @@ export default function LoginScreen() {
   return (
     <Box flex={1} p={6} bg="white" justifyContent="center">
       <VStack space={8} alignItems="center">
+        <Image
+          source={require("../../assets/images/logo.png")} // Pamiętaj o dodaniu swojego logo do folderu assets
+          alt="Logo aplikacji"
+          size="xl" // Możesz dostosować rozmiar: "sm", "md", "lg", "xl", "2xl"
+          resizeMode="contain"
+        />
+
         <Heading size="lg">Zaloguj się</Heading>
 
         <VStack space={4} width="100%">

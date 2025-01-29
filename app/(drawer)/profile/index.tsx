@@ -45,12 +45,16 @@ interface RecipeCardProps {
   recipe: Recipe;
 }
 
+//192.168.1.12:3000 < telefon
+
+//10.0.2.2:3000 < emulator
+
 const mockUserData: UserData = {
   id: "1",
   name: "Jan Kowalski",
   email: "jan.kowalski@mail.com",
   bio: "Pasjonat gotowania i dzielenia się przepisami",
-  avatar: "http://10.0.2.2:3000/uploads/avatar.jpg",
+  avatar: "http://192.168.1.12:3000/uploads/avatar.jpg",
   stats: {
     recipes: 15,
     followers: 124,
@@ -85,7 +89,9 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe }) => (
         <Avatar
           source={{
             uri: recipe.image
-              ? `http://10.0.2.2:3000/uploads/${recipe.image.split("/").pop()}`
+              ? `http://192.168.1.12:3000/uploads/${recipe.image
+                  .split("/")
+                  .pop()}`
               : require("../../../src/uploads/placeholder.png"),
           }}
           size="full"

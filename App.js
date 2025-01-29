@@ -10,10 +10,10 @@ Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
     shouldPlaySound: true,
-    shouldSetBadge: true,
+    shouldSetBadge: false,
   }),
 });
-
+Notifications.setProjectId("cookbook-mobile-app-wiktor123");
 export default function App() {
   const notificationListener = useRef();
   const responseListener = useRef();

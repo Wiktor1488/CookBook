@@ -1,280 +1,105 @@
 {
   "recipes": [
     {
-      "id": "1",
-      "title": "Spaghetteeei",
-      "description": "Klasyczne włoskie danie z makaronem i sosem mięsnym",
+      "title": "Spaghetti",
+      "description": "Klasyczne włoskie danie",
       "ingredients": [
-        "500g makaronu spaghetti",
+        "500g makaronu",
         "400g mięsa mielonego",
         "2 cebule",
         "2 ząbki czosnku",
         "2 puszki pomidorów"
       ],
-      "instructions": "1. Ugotuj makaron al dente\n2. Podsmaż mięso z cebulą\n3. Dodaj pomidory i gotuj 20 minut\n4. Połącz z makaronem",
-      "image": "./assets/images/placeholder.png",
-      "cookingTime": 45,
-      "servings": 4,
-      "difficulty": "medium",
-      "authorId": "1",
-      "createdAt": "2024-01-14T12:00:00.000Z",
-      "updatedAt": "2024-01-14T12:00:00.000Z"
-    },
-    {
-      "title": "aa",
-      "description": "aa",
-      "ingredients": [
-        "aa"
-      ],
-      "instructions": "aa",
+      "instructions": "1. Ugotuj makaron al dente\n2. Podsmaż mięso z cebulą\n3. Gotuj",
       "cookingTime": 30,
       "servings": 4,
       "difficulty": "medium",
-      "image": "/uploads/recipe-1737880628336-556337985.jpg",
+      "image": "/uploads/recipe-1738138852793-389401059.jpg",
       "authorId": "1",
-      "id": "4sfni03ix",
-      "createdAt": "2025-01-26T08:37:07.664Z",
-      "updatedAt": "2025-01-26T08:37:08.373Z"
+      "id": "z0vnwmq9o",
+      "createdAt": "2025-01-29T08:20:52.763Z",
+      "updatedAt": "2025-01-29T08:20:52.845Z"
     },
     {
-      "title": "bbb",
-      "description": "b",
+      "title": "Kurczak",
+      "description": "Złocisty kurczak",
       "ingredients": [
-        "bb"
+        "Kurczak",
+        "Przyprawy"
       ],
-      "instructions": "bb",
+      "instructions": "1. Do piekarnika ",
       "cookingTime": 30,
       "servings": 4,
-      "difficulty": "medium",
-      "image": "/uploads/recipe-1737880695627-342490408.jpg",
+      "difficulty": "hard",
+      "image": "/uploads/recipe-1738139113003-569731629.jpg",
       "authorId": "1",
-      "id": "23iraqjgq",
-      "createdAt": "2025-01-26T08:38:15.192Z",
-      "updatedAt": "2025-01-26T08:38:15.695Z"
+      "id": "r1rfpjg4j",
+      "createdAt": "2025-01-29T08:25:09.182Z",
+      "updatedAt": "2025-01-29T08:25:16.094Z"
     },
     {
-      "title": "tt",
-      "description": "tt",
+      "title": "Chleb",
+      "description": "Piękny chleb",
       "ingredients": [
-        "tt"
+        "Mąka"
       ],
-      "instructions": "tt",
+      "instructions": "1. Piecz",
       "cookingTime": 30,
       "servings": 4,
       "difficulty": "easy",
-      "image": "/uploads/recipe-1737882991714-577905521.jpg",
+      "image": "/uploads/recipe-1738139149303-464784361.jpg",
       "authorId": "1",
-      "id": "exyvm9tr1",
-      "createdAt": "2025-01-26T09:16:31.256Z",
-      "updatedAt": "2025-01-26T09:16:31.748Z"
+      "id": "nl9nftl3d",
+      "createdAt": "2025-01-29T08:25:49.277Z",
+      "updatedAt": "2025-01-29T08:25:49.369Z"
     },
     {
-      "title": "tt",
-      "description": "tt",
+      "title": "Groszek",
+      "description": "Groszek",
       "ingredients": [
-        "tt"
+        "Groszek"
       ],
-      "instructions": "tt",
+      "instructions": "Groszek",
       "cookingTime": 30,
       "servings": 4,
       "difficulty": "medium",
-      "image": "/uploads/recipe-1737883193668-946949934.jpg",
+      "image": "file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540anonymous%252Fcookbook-mobile-app-4edd77c2-f03b-4240-ab07-14b855ac7f92/ImagePicker/23efe94f-f4dd-4e9a-97f6-e7756f240493.jpeg",
       "authorId": "1",
-      "id": "1hcxveunz",
-      "createdAt": "2025-01-26T09:19:53.556Z",
-      "updatedAt": "2025-01-26T09:19:53.556Z"
+      "id": "7riyhnp1q",
+      "createdAt": "2025-01-29T08:36:32.368Z",
+      "updatedAt": "2025-01-29T08:36:32.368Z"
     },
     {
-      "title": "aa",
-      "description": "aa",
+      "title": "Test",
+      "description": "Test",
       "ingredients": [
-        "aa"
+        "Test"
       ],
-      "instructions": "aa",
+      "instructions": "Test",
       "cookingTime": 30,
       "servings": 4,
       "difficulty": "medium",
-      "image": "/uploads/recipe-1737883409499-477430545.jpg",
+      "image": "/uploads/recipe-1738140028302-968454868.jpeg",
       "authorId": "1",
-      "id": "8c7h8dxvt",
-      "createdAt": "2025-01-26T09:23:28.255Z",
-      "updatedAt": "2025-01-26T09:23:29.558Z"
+      "id": "4lqghyz10",
+      "createdAt": "2025-01-29T08:40:28.275Z",
+      "updatedAt": "2025-01-29T08:40:28.365Z"
     },
     {
-      "title": "a",
-      "description": "a",
+      "id": "qg0iv7syn",
+      "title": "Przykład ",
+      "description": "Przykład",
       "ingredients": [
-        "a"
+        "Przykład"
       ],
-      "instructions": "a",
+      "instructions": "Przykład",
       "cookingTime": 30,
       "servings": 4,
       "difficulty": "medium",
-      "image": "/uploads/recipe-1737883584567-462273425.jpg",
+      "image": "/uploads/recipe-1738141075458-155921717.jpeg",
       "authorId": "1",
-      "id": "wp3taiwie",
-      "createdAt": "2025-01-26T09:26:23.422Z",
-      "updatedAt": "2025-01-26T09:26:24.609Z"
-    },
-    {
-      "title": "aa",
-      "description": "aaaa",
-      "ingredients": [
-        "aa"
-      ],
-      "instructions": "aa",
-      "cookingTime": 30,
-      "servings": 4,
-      "difficulty": "medium",
-      "image": "/uploads/recipe-1737883776289-644769044.jpg",
-      "authorId": "1",
-      "id": "598e40fwk",
-      "createdAt": "2025-01-26T09:29:35.237Z",
-      "updatedAt": "2025-01-26T09:29:36.368Z"
-    },
-    {
-      "title": "ee",
-      "description": "ee",
-      "ingredients": [
-        "ee"
-      ],
-      "instructions": "ee",
-      "cookingTime": 30,
-      "servings": 4,
-      "difficulty": "medium",
-      "image": "/uploads/recipe-1737883937814-785057470.jpg",
-      "authorId": "1",
-      "id": "qgv4u5g3p",
-      "createdAt": "2025-01-26T09:32:16.740Z",
-      "updatedAt": "2025-01-26T09:32:17.859Z"
-    },
-    {
-      "title": "tt",
-      "description": "tt",
-      "ingredients": [
-        "tt"
-      ],
-      "instructions": "tt",
-      "cookingTime": 30,
-      "servings": 4,
-      "difficulty": "medium",
-      "image": "/uploads/recipe-1737884132429-139588137.jpg",
-      "authorId": "1",
-      "id": "5wvrkrx74",
-      "createdAt": "2025-01-26T09:35:32.365Z",
-      "updatedAt": "2025-01-26T09:35:32.552Z"
-    },
-    {
-      "title": "tt",
-      "description": "tt",
-      "ingredients": [
-        "tt"
-      ],
-      "instructions": "tt",
-      "cookingTime": 30,
-      "servings": 4,
-      "difficulty": "medium",
-      "image": "/uploads/recipe-1737884152465-469086073.jpg",
-      "authorId": "1",
-      "id": "9zvp56xr9",
-      "createdAt": "2025-01-26T09:35:51.434Z",
-      "updatedAt": "2025-01-26T09:35:52.514Z"
-    },
-    {
-      "title": "aaeeaw",
-      "description": "ewwea",
-      "ingredients": [
-        "ewaewa"
-      ],
-      "instructions": "ewaeaw",
-      "cookingTime": 30,
-      "servings": 4,
-      "difficulty": "medium",
-      "image": "/uploads/recipe-1737884381948-442513498.jpg",
-      "authorId": "1",
-      "id": "r83fxxp2n",
-      "createdAt": "2025-01-26T09:39:40.830Z",
-      "updatedAt": "2025-01-26T09:39:42.037Z"
-    },
-    {
-      "title": "eewa",
-      "description": "ewa",
-      "ingredients": [
-        "ewa"
-      ],
-      "instructions": "ewa",
-      "cookingTime": 30,
-      "servings": 4,
-      "difficulty": "medium",
-      "image": "/uploads/recipe-1737899610161-359930787.jpg",
-      "authorId": "1",
-      "id": "ecvhk1omq",
-      "createdAt": "2025-01-26T13:53:30.092Z",
-      "updatedAt": "2025-01-26T13:53:30.228Z"
-    },
-    {
-      "title": "eewa",
-      "description": "ewa",
-      "ingredients": [
-        "ewa"
-      ],
-      "instructions": "ewa",
-      "cookingTime": 30,
-      "servings": 4,
-      "difficulty": "medium",
-      "image": "/uploads/recipe-1737899638818-412865615.jpg",
-      "authorId": "1",
-      "id": "std9np3cm",
-      "createdAt": "2025-01-26T13:53:58.364Z",
-      "updatedAt": "2025-01-26T13:53:58.867Z"
-    },
-    {
-      "title": "chelsta",
-      "description": "to",
-      "ingredients": [
-        "faja"
-      ],
-      "instructions": "xd",
-      "cookingTime": 30,
-      "servings": 4,
-      "difficulty": "medium",
-      "image": "/uploads/recipe-1737902920519-506892640.jpg",
-      "authorId": "1",
-      "id": "6q50flc5m",
-      "createdAt": "2025-01-26T14:48:39.903Z",
-      "updatedAt": "2025-01-26T14:48:40.553Z"
-    },
-    {
-      "title": "Ttt",
-      "description": "Ttt",
-      "ingredients": [
-        "Ttt"
-      ],
-      "instructions": "Ttt",
-      "cookingTime": 30,
-      "servings": 4,
-      "difficulty": "medium",
-      "image": "/uploads/recipe-1737903325831-878452860.jpg",
-      "authorId": "1",
-      "id": "41dbkssj4",
-      "createdAt": "2025-01-26T14:55:25.799Z",
-      "updatedAt": "2025-01-26T14:55:28.990Z"
-    },
-    {
-      "title": "Witam",
-      "description": "Witam",
-      "ingredients": [
-        "Witam"
-      ],
-      "instructions": "Witam",
-      "cookingTime": 30,
-      "servings": 4,
-      "difficulty": "medium",
-      "image": "/uploads/recipe-1737903647384-716053302.jpg",
-      "authorId": "1",
-      "id": "k683f5tsm",
-      "createdAt": "2025-01-26T15:00:43.541Z",
-      "updatedAt": "2025-01-26T15:00:50.479Z"
+      "createdAt": "2025-01-29T08:57:51.413Z",
+      "updatedAt": "2025-01-29T08:57:55.503Z"
     }
   ]
 }

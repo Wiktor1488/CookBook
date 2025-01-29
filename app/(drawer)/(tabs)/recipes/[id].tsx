@@ -1,7 +1,8 @@
 // src/screens/RecipeDetailsScreen.tsx
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import { ScrollView } from "react-native";
 import { useLocalSearchParams, router, useFocusEffect } from "expo-router";
+import * as Speech from "expo-speech";
 import {
   Box,
   VStack,
@@ -24,7 +25,40 @@ export default function RecipeDetailsScreen() {
   const [recipe, setRecipe] = useState<Recipe | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isFavorite, setIsFavorite] = useState(false);
+  const [isReading, setIsReading] = useState(false);
+  const scrollViewRef = useRef<ScrollView>(null);
   const toast = useToast();
+
+  const readInstructions = async () => {
+    try {
+      if (isReading) {
+        await Speech.stop();
+        setIsReading(false);
+      } else if (recipe?.instructions) {
+        setIsReading(true);
+        await Speech.speak(recipe.instructions, {
+          language: "pl-PL",
+          onDone: () => setIsReading(false),
+          onError: () => setIsReading(false),
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      setIsReading(false);
+      toast.show({
+        description: "Wystąpił błąd podczas czytania instrukcji",
+        placement: "top",
+        variant: "error",
+      });
+    }
+  };
+
+  // Zatrzymaj czytanie przy odmontowaniu komponentu
+  useEffect(() => {
+    return () => {
+      Speech.stop();
+    };
+  }, []);
 
   const fetchRecipe = useCallback(async () => {
     try {
@@ -112,7 +146,9 @@ export default function RecipeDetailsScreen() {
         <Image
           source={{
             uri: recipe.image
-              ? `http://10.0.2.2:3000/uploads/${recipe.image.split("/").pop()}`
+              ? `http://192.168.1.12:3000/uploads/${recipe.image
+                  .split("/")
+                  .pop()}`
               : require("../../../../src/uploads/placeholder.png"),
           }}
           alt={recipe.title}
@@ -153,6 +189,19 @@ export default function RecipeDetailsScreen() {
           />
           <HStack space={2}>
             <IconButton
+              icon={
+                <Icon
+                  as={Ionicons}
+                  name={isReading ? "volume-high" : "volume-medium-outline"}
+                  color={isReading ? "red.500" : "white"}
+                />
+              }
+              onPress={readInstructions}
+              variant="solid"
+              bg="rgba(0,0,0,0.5)"
+              _pressed={{ bg: "rgba(0,0,0,0.7)" }}
+            />
+            <IconButton
               icon={<Icon as={Ionicons} name="refresh-outline" color="white" />}
               onPress={handleRefresh}
               variant="solid"
@@ -192,7 +241,7 @@ export default function RecipeDetailsScreen() {
         </Box>
       </Box>
 
-      <ScrollView>
+      <ScrollView ref={scrollViewRef}>
         <VStack p={4} space={6}>
           <HStack justifyContent="space-around">
             <VStack alignItems="center">

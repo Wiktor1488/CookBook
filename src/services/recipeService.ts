@@ -1,5 +1,6 @@
 import { api } from "../api/config";
 import { Recipe, CreateRecipeData } from "../types/api";
+import { Platform } from "react-native";
 
 class RecipeService {
   async getById(id: string): Promise<Recipe | undefined> {
@@ -14,34 +15,66 @@ class RecipeService {
 
   async getAll(params?: { search?: string }): Promise<Recipe[]> {
     try {
-      const response = await api.get("/recipes", { params });
-      return response.data; // zwróć response.data zamiast całego wywołania api.get
+      console.log("Calling API with params:", params);
+      const response = await api.get("/recipes", {
+        params: params
+          ? {
+              search: params.search,
+            }
+          : undefined,
+      });
+      console.log("API response for getAll:", response.data);
+      return response.data;
     } catch (error) {
       console.error("Błąd pobierania przepisów:", error);
       throw error;
     }
   }
+
   async uploadImage(id: string, imageUri: string) {
     try {
       const formData = new FormData();
+
+      // Popraw format URI dla iOS
+      const uri =
+        Platform.OS === "ios" ? imageUri.replace("file://", "") : imageUri;
+      const filename = imageUri.split("/").pop() || "image.jpg";
+
       formData.append("image", {
-        uri: imageUri,
+        uri: uri,
         type: "image/jpeg",
-        name: "recipe.jpg",
+        name: filename,
       } as any);
+
+      console.log("Uploading image:", {
+        uri,
+        formData: JSON.stringify(formData),
+        id,
+      });
 
       const response = await api.post(`/recipes/${id}/image`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
+          Accept: "application/json",
+        },
+        timeout: 60000,
+        onUploadProgress: (progressEvent) => {
+          const progress = progressEvent.loaded / (progressEvent.total ?? 1);
+          console.log("Upload progress:", Math.round(progress * 100), "%");
+        },
+        transformRequest: (data, headers) => {
+          return formData;
         },
       });
 
+      console.log("Upload response:", response.data);
       return response.data.imageUrl;
     } catch (error) {
       console.error("Error uploading image:", error);
       throw error;
     }
   }
+
   async getUserRecipes(userId: string): Promise<Recipe[]> {
     try {
       const response = await api.get(`/users/${userId}/recipes`);
@@ -51,6 +84,7 @@ class RecipeService {
       throw error;
     }
   }
+
   async create(data: CreateRecipeData): Promise<Recipe> {
     try {
       const response = await api.post("/recipes", data, {

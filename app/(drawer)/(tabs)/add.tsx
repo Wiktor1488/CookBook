@@ -97,12 +97,13 @@ export default function AddRecipeScreen() {
         });
       }
 
+      // Wyślij powiadomienie push
       await Notifications.scheduleNotificationAsync({
         content: {
           title: "Nowy przepis",
           body: `Pomyślnie dodano przepis: ${title}`,
         },
-        trigger: null,
+        trigger: null, // Bez opóźnienia, powiadomienie natychmiastowe
       });
 
       toast.show({

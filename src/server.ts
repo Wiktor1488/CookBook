@@ -12,22 +12,27 @@ interface RecipesData {
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Konfiguracja CORS
 app.use(
   cors({
-    origin: "*", // lub konkretne domeny np. 'http://localhost:8081'
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    origin: "*",
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization", "Accept"],
+    exposedHeaders: ["Content-Range", "X-Content-Range"],
     credentials: true,
   })
 );
+
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE");
   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
   next();
 });
+
 app.use(express.json());
 
+// Konfiguracja ścieżek
 const uploadsDir = path.join(
   "D:",
   "PojebieMNie",
@@ -43,12 +48,14 @@ const dataDir = path.join(
   "data"
 );
 
+// Tworzenie katalogów jeśli nie istnieją
 [uploadsDir, dataDir].forEach((dir) => {
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir, { recursive: true });
   }
 });
 
+// Konfiguracja multer dla uploadów
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     console.log("Saving file to:", uploadsDir);
@@ -73,9 +80,10 @@ const upload = multer({
       cb(null, false);
     }
   },
-  limits: { fileSize: 5 * 1024 * 1024 },
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
 });
 
+// Endpoints
 app.get("/uploads/", (req, res) => {
   fs.readdir(uploadsDir, (err, files) => {
     if (err) {
@@ -87,12 +95,30 @@ app.get("/uploads/", (req, res) => {
 
 app.get("/recipes", (req: Request, res: Response) => {
   try {
+    const searchQuery = req.query.search?.toString().toLowerCase();
     const recipesPath = path.join(dataDir, "recipes.json");
+
     if (!fs.existsSync(recipesPath)) {
       return res.json([]);
     }
+
     const recipesData = JSON.parse(fs.readFileSync(recipesPath, "utf8"));
-    res.json(recipesData.recipes);
+    let recipes = recipesData.recipes;
+
+    // Filtrowanie po wyszukiwanej frazie
+    if (searchQuery) {
+      recipes = recipes.filter(
+        (recipe: Recipe) =>
+          recipe.title.toLowerCase().includes(searchQuery) ||
+          recipe.description.toLowerCase().includes(searchQuery) ||
+          recipe.ingredients.some((ingredient: string) =>
+            ingredient.toLowerCase().includes(searchQuery)
+          )
+      );
+    }
+
+    console.log(`Found ${recipes.length} recipes for query: ${searchQuery}`);
+    res.json(recipes);
   } catch (error) {
     console.error("Error getting recipes:", error);
     res.status(500).json({ error: "Server error" });
@@ -122,8 +148,6 @@ app.get("/recipes/:id", (req: Request, res: Response) => {
 
 app.post("/recipes", (req: Request<{}, {}, Recipe>, res: Response) => {
   try {
-    console.log("HEADERS:", JSON.stringify(req.headers, null, 2));
-    console.log("BODY:", JSON.stringify(req.body, null, 2));
     console.log("Received recipe data:", req.body);
     const recipesPath = path.join(dataDir, "recipes.json");
     let recipesData: RecipesData = { recipes: [] };
@@ -133,15 +157,7 @@ app.post("/recipes", (req: Request<{}, {}, Recipe>, res: Response) => {
     }
 
     const newRecipe: Recipe = {
-      title: req.body.title,
-      description: req.body.description,
-      ingredients: req.body.ingredients,
-      instructions: req.body.instructions,
-      cookingTime: req.body.cookingTime,
-      servings: req.body.servings,
-      difficulty: req.body.difficulty,
-      image: req.body.image,
-      authorId: req.body.authorId,
+      ...req.body,
       id: req.body.id || Math.random().toString(36).substr(2, 9),
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
@@ -176,13 +192,13 @@ app.put("/recipes/:id", (req: Request, res: Response) => {
     };
 
     fs.writeFileSync(recipesPath, JSON.stringify(recipesData, null, 2));
-    console.log("Recipe updated successfully:", recipesData.recipes[index]);
     res.json(recipesData.recipes[index]);
   } catch (error) {
     console.error("Error updating recipe:", error);
     res.status(500).json({ error: "Server error" });
   }
 });
+
 app.get("/users/:userId/recipes", (req: Request, res: Response) => {
   try {
     const recipesPath = path.join(dataDir, "recipes.json");
@@ -199,27 +215,42 @@ app.get("/users/:userId/recipes", (req: Request, res: Response) => {
     res.status(500).json({ error: "Server error" });
   }
 });
+
 app.post(
   "/recipes/:id/image",
   upload.single("image"),
   async (req: Request, res: Response) => {
-    console.log("UPLOAD REQUEST:", {
-      file: req.file,
-      body: req.body,
+    console.log("Upload request received:", {
+      headers: req.headers,
       params: req.params,
+      file: req.file
+        ? {
+            filename: req.file.filename,
+            size: req.file.size,
+            mimetype: req.file.mimetype,
+          }
+        : null,
     });
+
     try {
       if (!req.file) {
+        console.error("No file in request");
         return res.status(400).json({ error: "No file uploaded" });
       }
 
       const recipesPath = path.join(dataDir, "recipes.json");
+      if (!fs.existsSync(recipesPath)) {
+        console.error("Recipes file not found");
+        return res.status(404).json({ error: "Recipes file not found" });
+      }
+
       let recipesData = JSON.parse(fs.readFileSync(recipesPath, "utf8"));
       const index = recipesData.recipes.findIndex(
         (r: Recipe) => r.id === req.params.id
       );
 
       if (index === -1) {
+        console.error("Recipe not found:", req.params.id);
         return res.status(404).json({ error: "Recipe not found" });
       }
 
@@ -227,19 +258,32 @@ app.post(
       recipesData.recipes[index].image = imageUrl;
 
       fs.writeFileSync(recipesPath, JSON.stringify(recipesData, null, 2));
-      console.log("Image uploaded successfully:", imageUrl);
-      res.json({ imageUrl });
+      console.log("Image saved successfully:", {
+        recipeId: req.params.id,
+        imageUrl,
+        filename: req.file.filename,
+      });
+
+      res.status(200).json({
+        imageUrl,
+        message: "Image uploaded successfully",
+      });
     } catch (error: unknown) {
-      console.error("Pełen błąd uploadu:", error);
+      console.error("Full upload error:", error);
       const errorMessage =
         error instanceof Error ? error.message : String(error);
-      res.status(500).json({ error: "Server error", details: errorMessage });
+      res.status(500).json({
+        error: "Server error",
+        details: errorMessage,
+      });
     }
   }
 );
 
+// Serwowanie statycznych plików z folderu uploads
 app.use("/uploads", express.static(uploadsDir));
 
+// Uruchomienie serwera
 app.listen(Number(PORT), "0.0.0.0", () => {
   console.log(`Server running on http://0.0.0.0:${PORT}`);
 });

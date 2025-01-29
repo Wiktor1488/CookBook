@@ -23,6 +23,8 @@ import { recipeService } from "../../../src/services/recipeService";
 import { Recipe } from "../../../src/types/api";
 import _ from "lodash";
 import { Platform } from "react-native";
+import Constants from "expo-constants";
+import * as Notifications from "expo-notifications";
 
 interface RecipeCardProps {
   recipe: Recipe;
@@ -30,16 +32,9 @@ interface RecipeCardProps {
 }
 
 const RecipeCard: React.FC<RecipeCardProps> = ({ recipe, onPress }) => {
-  // Przekształć ścieżkę obrazu
-  // Dla urządzenia
   const imageSource = recipe.image
-    ? `http://192.168.1.12:3000${recipe.image}`
+    ? { uri: `http://192.168.1.12:3000${recipe.image}` }
     : require("../../../src/uploads/placeholder.png");
-
-  // Dla emulatora
-  // const imageSource = recipe.image
-  //  ? `http://10.0.2.2:3000${recipe.image}`
-  //   : require("../../../src/uploads/placeholder.png");
 
   return (
     <Pressable onPress={onPress} my={2}>
@@ -50,7 +45,7 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe, onPress }) => {
         overflow="hidden"
       >
         <Image
-          source={{ uri: imageSource }}
+          source={imageSource}
           alt={recipe.title}
           height={200}
           width="100%"
@@ -107,10 +102,12 @@ export default function RecipesScreen() {
 
   const fetchRecipes = async (search?: string) => {
     console.log("Fetching recipes with search:", search);
+    setIsLoading(true);
     try {
-      const data = await recipeService.getAll({ search });
+      const params = search ? { search: search.trim() } : undefined;
+      const data = await recipeService.getAll(params);
       console.log("Fetched recipes:", data);
-      setRecipesList(data); // Ustawienie danych
+      setRecipesList(data);
       setError(null);
     } catch (err) {
       console.error("Error fetching recipes:", err);
@@ -118,7 +115,6 @@ export default function RecipesScreen() {
       toast.show({
         description: "Wystąpił błąd podczas pobierania przepisów",
         placement: "top",
-        variant: "error",
       });
     } finally {
       setIsLoading(false);
@@ -126,25 +122,35 @@ export default function RecipesScreen() {
     }
   };
 
-  // Debounced search
   const debouncedSearch = useCallback(
     _.debounce((query: string) => {
-      fetchRecipes(query);
+      console.log("Debounced search with query:", query);
+      if (query) {
+        fetchRecipes(query);
+      } else {
+        fetchRecipes();
+      }
     }, 500),
     []
   );
 
   useEffect(() => {
-    console.log("Component mounted, fetching recipes...");
+    console.log("Component mounted, fetching initial recipes...");
     fetchRecipes();
+
+    return () => {
+      debouncedSearch.cancel();
+    };
   }, []);
 
   const handleSearch = (query: string) => {
+    console.log("Search query changed:", query);
     setSearchQuery(query);
     debouncedSearch(query);
   };
 
   const handleRefresh = () => {
+    console.log("Refreshing recipes...");
     setIsRefreshing(true);
     fetchRecipes(searchQuery);
   };
@@ -204,17 +210,14 @@ export default function RecipesScreen() {
           <FlatList
             data={recipesList}
             keyExtractor={(item) => item.id}
-            renderItem={({ item }) => {
-              console.log("Rendering recipe:", item);
-              return (
-                <RecipeCard
-                  recipe={item}
-                  onPress={() =>
-                    router.push(`/(drawer)/(tabs)/recipes/${item.id}` as any)
-                  }
-                />
-              );
-            }}
+            renderItem={({ item }) => (
+              <RecipeCard
+                recipe={item}
+                onPress={() =>
+                  router.push(`/(drawer)/(tabs)/recipes/${item.id}` as any)
+                }
+              />
+            )}
             refreshControl={
               <RefreshControl
                 refreshing={isRefreshing}
@@ -233,15 +236,6 @@ export default function RecipesScreen() {
           />
         )}
       </VStack>
-
-      <Fab
-        renderInPortal={false}
-        shadow={2}
-        size="sm"
-        icon={<Icon color="white" as={Ionicons} name="add" size="sm" />}
-        onPress={() => router.push("/(tabs)/recipes/edit/new" as any)}
-        placement="bottom-right"
-      />
     </Box>
   );
 }
